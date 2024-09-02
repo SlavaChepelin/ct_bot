@@ -6,11 +6,26 @@ html = requests.get('https://docs.google.com/spreadsheets/d/1dy_i_s5Cn4DEZnl87_j
 soup = BeautifulSoup(html, "lxml")
 tables = soup.find_all("table")
 
+index=0
+answ = []
+for row in tables[0].find_all("tr"):
+    temp=0
+    cur=[]
+    for cell in row.find_all(["td"]):
+        if(temp==1):
+           cur.append(cell.text)    
+        elif(cell.text=='ч' or cell.text=='н'):
+            temp=1
+    answ.append(cur)
+    index+=1    
 
-with open("ans.csv", "w") as f:
-    wr = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
-    wr.writerows([[td.text for td in row.find_all("td")] for row in tables[0].find_all("tr")])
-with open('ans.csv', newline='') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-    for row in spamreader:
-        print(', '.join(row))
+idgroup=0+9*4+1
+
+for x in answ[0:16:2]:
+    print(x[37:41])
+'''
+for i in range(len(answ)):
+    print(answ[idgroup][i],answ[idgroup][i],answ[idgroup][i],answ[idgroup][i])
+    if(i>50):
+        break
+'''
