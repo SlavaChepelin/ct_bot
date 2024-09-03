@@ -33,3 +33,9 @@ async def add_user(tg_id: int,
 
     await db.commit()
     await db.close()
+
+async def get_user(tg_id: int)-> None:
+    db = await aiosqlite.connect('''data_bases/users.db''')
+    cursor = await db.execute(f"SELECT * FROM Users WHERE (id == {tg_id})")
+    result = await cursor.fetchone()
+    return result
