@@ -39,6 +39,17 @@ async def check_is_in(group: int, date: int, number: int) -> bool:
         return False  
 async def get_row(group: int, date: int, number: int) -> None:
     db = await aiosqlite.connect('''data_bases/all.db''')
+    await db.execute("""CREATE TABLE IF NOT EXISTS Schedule (
+    id INTEGER PRIMARY KEY,
+    group_id INTEGER NOT NULL, 
+    date INTEGER NOT NULL,
+    number INTEGER NOT NULL,
+    subject TEXT NOT NULL,
+    lesson_type TEXT NOT NULL,
+    auditorium TEXT NOT NULL,
+    teacher TEXT NOT NULL
+    )
+    """)
 
     cursor = await db.execute(f"SELECT * FROM Schedule WHERE (group_id == {group} AND date == {date} AND number == {number})")
     result = await cursor.fetchone()
@@ -65,3 +76,13 @@ async def delete_row(group: int, date: int, number: int) -> None:
 
     await db.commit()
     await db.close()
+    
+async def get_schedule(group: int, date: int):
+    db = await aiosqlite.connect('''data_bases/all.db''')
+
+    cursor = await db.execute(f"SELECT * FROM Schedule WHERE (group_id == {group} AND date == {date})")
+    result = await cursor.fetchall()
+
+    await db.close()
+
+    return result

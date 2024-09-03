@@ -12,11 +12,11 @@ admin_router.message.filter()
 
 @admin_router.message(Command("dbplus"))
 async def dbplus(message: Message):
-    await db_schedule.add_schedule_plus(39, "2024.09.01", 2, "Матан", "пр", "2444", "Кохась" )
+    await db_schedule.add_schedule_plus(39, "2024.09.03", 2, "Матан", "пр", "2444", "Кохась" )
     
 @admin_router.message(Command("dbminus"))
 async def dbminus(message: Message):
-    await db_schedule.add_schedule_minus(39, "2024.09.01", 2)
+    await db_schedule.add_schedule_minus(39, "2024.09.03", 3)
 
 @admin_router.message(Command("dballadd"))
 async def dballadd(message: Message):
@@ -29,3 +29,7 @@ async def dballget(message: Message):
 @admin_router.message(Command("dbupdater"))
 async def dbupdater(message: Message):
    await updating.updating_database(39)
+
+@admin_router.message(Command("gettable"))
+async def gettable(message: Message):
+   print(await updating.get_schedule(39,"2024.09.03"))
