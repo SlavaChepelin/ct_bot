@@ -9,8 +9,11 @@ admin_router = Router()
 admin_router.message.filter()
 
 
-@admin_router.message(Command("db"))
-async def admin_start(message: Message):
-    await db_schedule.add_schedule_change(139, "2024.09.03", 1, "АрхЭВМ", "лек", "2139")
-    await message.answer("База создана")
+@admin_router.message(Command("dbplus"))
+async def dbplus(message: Message):
+    await db_schedule.add_schedule_plus(39, "2024.09.01", 2, "Матан", "пр", 2444, "Кохась" )
+    
+@admin_router.message(Command("dbminus"))
+async def dbminus(message: Message):
+    await db_schedule.add_schedule_minus(39, "2024.09.01", 2)
 
