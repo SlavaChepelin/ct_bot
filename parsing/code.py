@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-import csv
 import requests
 answ = []
 def download():
@@ -21,12 +20,20 @@ def download():
         answ.append(cur)
         index+=1    
 dates=[[0,16],[17,33],[34,50],[51,67],[68,84],[85,102]]
-def get_date(day,group): #day 1-6, group 32-39
+def get_date(day,group): #day 1-7, group 32-42
     idgroup=(group-30)*4+1
+    if(group==41 or group==42):
+       idgroup=(group-31)*4+1 
     day_cnt=dates[day-1]
+    timetable=[]
     for x in answ[day_cnt[0]+3:day_cnt[1]+3:2]:
-        print(x[idgroup:idgroup+4])
+        timetable.append((x[idgroup:idgroup+4]))
+    return timetable
+
+def get_schedule(group):
+    schedule=[]
+    for day in range(1,7):
+        schedule.append(get_date(day,group))
+    return schedule
 download()
-get_date(1,39)
-print("")
-get_date(2,39)
+print(get_schedule(37))
