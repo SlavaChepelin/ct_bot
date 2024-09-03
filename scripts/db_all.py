@@ -49,3 +49,11 @@ async def get_row(group: int, date: int, number: int) -> None:
         return result
     else:
         return None
+async def update_row(group: int, date: int, number: int, new_subject: str, new_lesson_type: str, new_auditorium: str, new_teacher: str) -> None:
+    db = await aiosqlite.connect('''data_bases/all.db''')
+
+    await db.execute("""UPDATE Schedule SET subject=?, lesson_type=?, auditorium=?, teacher=? WHERE (group_id == ? AND date == ? AND number == ?)""",
+                     (new_subject, new_lesson_type, new_auditorium, new_teacher, group, date, number))
+
+    await db.commit()
+    await db.close()

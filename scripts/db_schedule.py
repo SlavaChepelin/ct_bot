@@ -45,6 +45,19 @@ async def add_schedule_minus(group: int,
                      (group, date, number))
     await db.commit()
     await db.close()
+    
+async def get_plus_changes(group: int, date: str):
+    db = await aiosqlite.connect('''data_bases/schedule.db''')
+
+    # Find all matches in the database based on group and date and load them into "result"
+    cursor = await db.execute(f"SELECT * FROM Plus WHERE (group_id == {group} AND date == '{date}')")
+    result = await cursor.fetchall()
+
+    await db.commit()
+    await db.close()
+
+    return result
+
 '''
 
 async def get_schedule_changes(date: str):
