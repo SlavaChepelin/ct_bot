@@ -57,3 +57,11 @@ async def update_row(group: int, date: int, number: int, new_subject: str, new_l
 
     await db.commit()
     await db.close()
+async def delete_row(group: int, date: int, number: int) -> None:
+    db = await aiosqlite.connect('''data_bases/all.db''')
+
+    await db.execute("DELETE FROM Schedule WHERE (group_id == ? AND date == ? AND number == ?)",
+                     (group, date, number))
+
+    await db.commit()
+    await db.close()

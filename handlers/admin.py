@@ -4,6 +4,7 @@ from aiogram.types import Message
 
 from scripts import db_schedule
 from scripts import db_all
+from parsing import updating
 
 admin_router = Router()
 admin_router.message.filter()
@@ -24,3 +25,7 @@ async def dballadd(message: Message):
 async def dballget(message: Message):
     s = await db_all.get_row(39,1,1)
     print(str(s[0])+' '+str(s[1])+' '+str(s[2])+' '+str(s[3])+' '+str(s[4]))
+
+@admin_router.message(Command("dbupdater"))
+async def dbupdater(message: Message):
+   await updating.updating_database(39)
