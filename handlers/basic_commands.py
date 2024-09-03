@@ -18,9 +18,17 @@ async def start(message: Message):
     await message.answer("Мы рады что вы решили воспользоваться нашим ботом!")
     await message.answer("Подскажите, из какой вы группы?")
 
-
+'''
 @basic_router.message(Command("get_users"))
 async def get_user_data(message: Message):
     result = await db_users.get_user(message.from_user.id)
     await message.answer(   str(result[0]) + " " + result[1])
 
+@basic_router.message(Command("update_groups"))
+async def update_group(message: Message):
+    result = await db_users.get_user(message.from_user.id)
+    await message.answer(str(result[0]) + " " + str(result[4]))
+    await db_users.update_user_group(message.from_user.id,39)
+    result = await db_users.get_user(message.from_user.id)
+    await message.answer(str(result[0]) + " " + str(result[4]))
+'''

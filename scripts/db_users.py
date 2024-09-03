@@ -15,7 +15,7 @@ async def add_user(tg_id: int,
         username TEXT,
         first_name TEXT,
         last_name TEXT,
-        "group" INTEGER,
+        group_id INTEGER,
         eng_group TEXT,
         is_admin BOOLEAN
         )
@@ -25,7 +25,7 @@ async def add_user(tg_id: int,
     cursor = await db.execute(f"SELECT id, username FROM Users WHERE (id == {tg_id})")
     result = await cursor.fetchone()
 
-    # Если его нет в БД, добавляем
+    # Если его нет в БД, добавляем 
     if result is None:
         await db.execute("INSERT INTO Users (id, username, first_name, last_name, is_admin) "
                          "VALUES (?, ?, ?, ?, ?)",
@@ -39,3 +39,22 @@ async def get_user(tg_id: int)-> None:
     cursor = await db.execute(f"SELECT * FROM Users WHERE (id == {tg_id})")
     result = await cursor.fetchone()
     return result
+    await db.close()
+
+async def update_user_group(tg_id: int, new_group: int) -> None:
+    db = await aiosqlite.connect('data_bases/users.db')
+    
+    cursor = await db.execute(f"SELECT id FROM Users WHERE (id == {tg_id})")
+    result = await cursor.fetchone()
+
+    if result is not None:
+        await db.execute("UPDATE Users SET group_id=? WHERE id=?",
+                         (new_group, tg_id))
+        await db.commit()
+
+    await db.close()
+'''
+убрать авто добавление firstname,lastname
+переделать струкутру таблицы - bool get_updates
+int update_time
+'''
