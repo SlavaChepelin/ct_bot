@@ -131,6 +131,21 @@ async def is_user_captain(tg_id: int) -> bool: #староста/админ
             return False
     else:
         return False
+async def is_filled(tg_id: int) -> bool: 
+    db = await aiosqlite.connect('data_bases/users.db')
+    cursor = await db.execute(f"SELECT first_name, last_name, group_id FROM Users WHERE (id == {tg_id})")
+    result = await cursor.fetchone()
+
+    await db.close()
+
+    if result is not None:
+        first_name, last_name, group_id = result
+        if first_name and last_name and group_id:
+            return True
+        else:
+            return False
+    else:
+        return False
     
 
 
