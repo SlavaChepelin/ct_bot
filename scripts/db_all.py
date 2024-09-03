@@ -76,3 +76,13 @@ async def delete_row(group: int, date: int, number: int) -> None:
 
     await db.commit()
     await db.close()
+    
+async def get_schedule(group: int, date: int):
+    db = await aiosqlite.connect('''data_bases/all.db''')
+
+    cursor = await db.execute(f"SELECT * FROM Schedule WHERE (group_id == {group} AND date == {date})")
+    result = await cursor.fetchall()
+
+    await db.close()
+
+    return result

@@ -32,4 +32,4 @@ async def dbupdater(message: Message):
 
 @admin_router.message(Command("gettable"))
 async def gettable(message: Message):
-   await updating.get_schedule(39,"2024.09.03")
+   print(await updating.get_schedule(39,"2024.09.03"))
