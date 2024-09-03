@@ -17,7 +17,9 @@ async def add_user(tg_id: int,
         last_name TEXT,
         group_id INTEGER,
         eng_group TEXT,
-        is_admin BOOLEAN
+        is_admin INTEGER,
+        get_updates BOOLEAN,
+        update_time INTEGER
         )
         """)
 
@@ -27,9 +29,9 @@ async def add_user(tg_id: int,
 
     # Если его нет в БД, добавляем 
     if result is None:
-        await db.execute("INSERT INTO Users (id, username, first_name, last_name, is_admin) "
-                         "VALUES (?, ?, ?, ?, ?)",
-                         (tg_id, username, first_name, last_name, False))
+        await db.execute("INSERT INTO Users (id, username, is_admin) "
+                         "VALUES (?, ?, ?)",
+                         (tg_id, username, 0))
 
     await db.commit()
     await db.close()
@@ -38,8 +40,9 @@ async def get_user(tg_id: int)-> None:
     db = await aiosqlite.connect('''data_bases/users.db''')
     cursor = await db.execute(f"SELECT * FROM Users WHERE (id == {tg_id})")
     result = await cursor.fetchone()
-    return result
     await db.close()
+    return result
+    
 
 async def update_user_group(tg_id: int, new_group: int) -> None:
     db = await aiosqlite.connect('data_bases/users.db')
@@ -53,8 +56,48 @@ async def update_user_group(tg_id: int, new_group: int) -> None:
         await db.commit()
 
     await db.close()
-'''
-убрать авто добавление firstname,lastname
-переделать струкутру таблицы - bool get_updates
-int update_time
-'''
+    
+async def update_user_name(tg_id: int, new_first_name: str, new_last_name: str) -> None:
+    db = await aiosqlite.connect('data_bases/users.db')
+
+    cursor = await db.execute(f"SELECT id FROM Users WHERE (id == {tg_id})")
+    result = await cursor.fetchone()
+
+    if result is not None:
+        await db.execute("UPDATE Users SET first_name=?, last_name=? WHERE id=?",
+                         (new_first_name, new_last_name, tg_id))
+        await db.commit()
+
+    await db.close()
+    
+async def is_user_admin(tg_id: int) -> bool: #админ
+    db = await aiosqlite.connect('data_bases/users.db')
+
+    cursor = await db.execute(f"SELECT is_admin FROM Users WHERE (id == {tg_id})")
+    result = await cursor.fetchone()
+    await db.close()
+    if result is not None:
+        if(result[0]==2):
+            return True
+        else: 
+            return False
+    else:
+        return False
+    
+async def is_user_captain(tg_id: int) -> bool: #староста/админ
+    db = await aiosqlite.connect('data_bases/users.db')
+
+    cursor = await db.execute(f"SELECT is_admin FROM Users WHERE (id == {tg_id})")
+    result = await cursor.fetchone()
+
+    await db.close()
+    if result is not None:
+        if(result[0]>=1):
+            return True
+        else:
+            return False
+    else:
+        return False
+    
+
+
