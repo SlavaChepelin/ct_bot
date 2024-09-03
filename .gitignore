@@ -1,4 +1,7 @@
 **/.idea/*
 **/.venv/*
+
 **.db*
+
 service_account.json
+.env
