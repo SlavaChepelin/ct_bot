@@ -33,3 +33,7 @@ async def dbupdater(message: Message):
 @admin_router.message(Command("gettable"))
 async def gettable(message: Message):
    print(await updating.get_schedule(39,"2024.09.03"))
+
+@admin_router.message(Command("getanswer"))
+async def getanswer(message: Message):
+   print(await updating.beatiful_schedule(39,"2024.09.03"))
