@@ -2,6 +2,7 @@ import aiosqlite
 from parsing import parsing
 from scripts import db_all 
 async def updating_database(group):
+    parsing.download()
     timetable = parsing.get_schedule(group)
     date_update = []
     for day in range(6):

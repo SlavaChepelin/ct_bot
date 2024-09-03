@@ -36,5 +36,3 @@ def get_schedule(group):
     for day in range(1,7):
         schedule.append(get_date(day,group))
     return schedule
-download()
-print(get_schedule(37))
