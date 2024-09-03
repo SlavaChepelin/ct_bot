@@ -15,7 +15,7 @@ async def add_schedule_plus(group: int,
     id INTEGER PRIMARY KEY,
     group_id INTEGER NOT NULL, 
     date TEXT NOT NULL,
-    number TEXT NOT NULL,
+    number INTEGER NOT NULL,
     subject TEXT NOT NULL,
     lesson_type TEXT NOT NULL,
     auditorium TEXT NOT NULL,
@@ -37,7 +37,7 @@ async def add_schedule_minus(group: int,
     id INTEGER PRIMARY KEY,
     group_id INTEGER NOT NULL, 
     date TEXT NOT NULL,
-    number TEXT NOT NULL
+    number INTEGER NOT NULL
     )
     """)
     await db.execute("INSERT INTO Minus (group_id, date, number)"
