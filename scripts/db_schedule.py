@@ -48,11 +48,15 @@ async def add_schedule_minus(group: int,
     
 async def get_plus_changes(group: int, date: str):
     db = await aiosqlite.connect('''data_bases/schedule.db''')
-    await db.execute("""CREATE TABLE IF NOT EXISTS Minus (
+    await db.execute("""CREATE TABLE IF NOT EXISTS Plus (
     id INTEGER PRIMARY KEY,
     group_id INTEGER NOT NULL, 
     date TEXT NOT NULL,
-    number INTEGER NOT NULL
+    number INTEGER NOT NULL,
+    subject TEXT NOT NULL,
+    lesson_type TEXT NOT NULL,
+    auditorium TEXT NOT NULL,
+    teacher TEXT NOT NULL
     )
     """)
    
@@ -82,11 +86,15 @@ async def get_minus_changes(group: int, date: str):
     return result
 async def delete_plus_changes(group: int, date: str):
     db = await aiosqlite.connect('''data_bases/schedule.db''')
-    await db.execute("""CREATE TABLE IF NOT EXISTS Minus (
+    await db.execute("""CREATE TABLE IF NOT EXISTS Plus (
     id INTEGER PRIMARY KEY,
     group_id INTEGER NOT NULL, 
     date TEXT NOT NULL,
-    number INTEGER NOT NULL
+    number INTEGER NOT NULL,
+    subject TEXT NOT NULL,
+    lesson_type TEXT NOT NULL,
+    auditorium TEXT NOT NULL,
+    teacher TEXT NOT NULL
     )
     """)
 
