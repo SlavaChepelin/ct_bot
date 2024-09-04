@@ -29,7 +29,7 @@ async def dballget(message: Message):
 
 @test_router.message(Command("dbupdater"))
 async def dbupdater(message: Message):
-   await updating.updating_database(39)
+   await forms.update_all()
 
 @test_router.message(Command("gettable"))
 async def gettable(message: Message):

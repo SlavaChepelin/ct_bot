@@ -6,7 +6,7 @@ from scripts import db_all
 from scripts import db_schedule
  
 async def updating_database(group: int):
-    parsing.download()
+    
     timetable = parsing.get_schedule(group)
     date_update = []
     for day in range(6):

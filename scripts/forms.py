@@ -2,6 +2,7 @@ import datetime
 from scripts import db_schedule
 from scripts import db_all
 from parsing import updating
+from parsing import parsing
 '''
 3) Отменить пару (группа день номер пары)
 '''
@@ -40,3 +41,16 @@ async def delete_changes(groupid: int, date: str) -> None:
     
 async def get_schedule(groupid: int, date: str) -> list:
     return await updating.beatiful_schedule(groupid, date)
+
+async def update_all():
+   parsing.download()
+   await updating.updating_database(132)
+   await updating.updating_database(133)
+   await updating.updating_database(134)
+   await updating.updating_database(135)
+   await updating.updating_database(136)
+   await updating.updating_database(137)
+   await updating.updating_database(138)
+   await updating.updating_database(139)
+   await updating.updating_database(141)
+   await updating.updating_database(142)
