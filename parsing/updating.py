@@ -44,17 +44,17 @@ async def get_schedule(group: int, day: str):
     for row in result3:
         anstable[int(row[3])-1]=[row[4],row[5],row[6],row[7]]
     if(result1==None and result2==None):
-        return anstable
+        return anstable # нет изменений
     for row in result2:
         anstable[int(row[3])-1]=["","","",""]
     for row in result1:
         anstable[int(row[3])-1]=[row[4],row[5],row[6],row[7]]
-    return anstable
+    return anstable # есть изменения
+
 data = ["8:20-9:50","10:00-11:30","11:40-13:10","13:30-15:00","15:20-16:50","17:00-18:30","18:40-20:10","20:20-21.50 "]
 async def beatiful_schedule(group: int, day: str):
     schedule = await get_schedule(group, day)
     ans=[]
-    ans.append(f"Расписание для группы {group} на {day}:")
     for i in range(8):
         if(schedule[i][0]== ""):
             continue

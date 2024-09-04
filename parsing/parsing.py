@@ -32,6 +32,7 @@ def get_date(day,group): #day 1-7, group 32-42
 
 def get_schedule(group):
     #тут обруби курс, позже добавим разделение на курсы
+    group = group %100
     schedule=[]
     for day in range(1,7):
         schedule.append(get_date(day,group))
