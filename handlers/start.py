@@ -5,10 +5,13 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 
-from keyboards.start_kbds import (GroupSelectionCallbackFactory, ConsentToUpdatesCallbackFactory,
+from keyboards.start_kbds import (GroupSelectionCallbackFactory,
+                                  ConsentToUpdatesCallbackFactory,
                                   TimeSelectionCallbackFactory,
-                                  get_group_selection_keyboard_fab, get_consent_to_updates_keyboard_fab,
+                                  get_group_selection_keyboard_fab,
+                                  get_consent_to_updates_keyboard_fab,
                                   get_time_selection_keyboard_fab)
+from keyboards.user_kbds import menu_kb, delete_kb
 
 from scripts import db_users
 
@@ -32,14 +35,15 @@ async def start(message: Message, state: FSMContext) -> None:
     is_filled = await db_users.is_filled(message.from_user.id)
 
     if is_filled:
-        text_2 = "Вы уже ввели свои данные, хотите их поменять?"
+        text_2 = "Вы уже ввели свои данные, вы можете их поменять в настройках"
+
+        await message.answer(text_1 + text_2, reply_markup=menu_kb)
 
     else:
         text_2 = "Для работы пожалуйста введите ваши данные.\nСначала напишите своё имя."
 
+        await message.answer(text_1 + text_2, reply_markup=delete_kb)
         await state.set_state(AddInfo.first_name)
-
-    await message.answer(text_1 + text_2)
 
 
 @start_router.message(AddInfo.first_name, F.text)
@@ -101,7 +105,10 @@ async def add_time_selection(callback: CallbackQuery,
                              state: FSMContext) -> None:
     await state.update_data(time_selection=callback_data.action)
 
-    await callback.message.edit_text(f"Спасибо большое, вы выбрали получать уведомления в {callback_data.action}:00.")
+    await callback.message.edit_text(f"Вы выбрали получать уведомления в {callback_data.action}:00.")
+
+    await callback.message.answer(text="Все необходимые данные заполнены, вы можете их исправить в настройках.",
+                                  reply_markup=menu_kb)
 
     data: dict = await state.get_data()
 
