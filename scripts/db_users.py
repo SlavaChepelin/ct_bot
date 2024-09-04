@@ -148,6 +148,13 @@ async def is_filled(tg_id: int) -> bool:
     else:
         return False
     
-    
+async def get_users_by_update_time(update_time: int) -> list:
+    db = await aiosqlite.connect('data_bases/users.db')
+    cursor = await db.execute(f"SELECT id FROM Users WHERE (update_time == {update_time} AND get_updates == 1)")
+    result = await cursor.fetchall()
+    await db.close()
+
+    ids = [row[0] for row in result]
+    return ids
 
 

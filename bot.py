@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
 
+import datetime
+
 import asyncio
 import logging
 
@@ -13,6 +15,8 @@ load_dotenv()
 token: str = os.getenv("TOKEN")
 
 logging.basicConfig(level=logging.INFO)
+
+
 
 
 async def main():
@@ -28,4 +32,6 @@ async def main():
 
 
 if __name__ == '__main__':
+    #thread = threading.Thread(target=looper)
+    #thread.start()
     asyncio.run(main())

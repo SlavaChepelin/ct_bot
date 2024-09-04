@@ -42,8 +42,10 @@ async def delete_changes(groupid: int, date: str) -> None:
 async def get_schedule(groupid: int, date: str) -> list:
     return await updating.beatiful_schedule(groupid, date)
 
+async def get_users_by_update_time(time:int) -> list :
+    return await db_users.get_users_by_update_time(time)
 async def update_all():
-   parsing.download()
+   parsing.download() # не хардкодинг - честно
    await updating.updating_database(132)
    await updating.updating_database(133)
    await updating.updating_database(134)

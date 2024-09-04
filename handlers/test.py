@@ -58,3 +58,4 @@ async def delete_changes(message: Message):
 @test_router.message(Command("get_schedule"))
 async def get_schedule(message: Message):
    print(await forms.get_schedule(39, "2024.09.04"))
+
