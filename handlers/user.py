@@ -10,7 +10,7 @@ from keyboards.user_kbds import (ScheduleTypeSelectionCallbackFactory,
                                  get_schedule_day_back_keyboard_fab,
                                  menu_kb)
 
-from scripts.forms import get_schedule
+from scripts.formatting import get_schedule
 from scripts.db_users import get_user
 
 
@@ -33,11 +33,10 @@ async def send_schedule(callback: CallbackQuery, callback_data: ScheduleTypeSele
 
     if callback_data.action == "today" or callback_data.action == "tomorrow":
         text = "Расписание\n\n"
+        date = datetime.date.today()
 
-        if callback_data.action == "today":
-            date = datetime.date.today()
-        else:
-            date = datetime.date(2024, 9, 5)
+        if callback_data.action == "tomorrow":
+            date = date + datetime.timedelta(days=1)
 
         group_id: tuple = await get_user(callback.from_user.id)
         schedule_list = await get_schedule(group_id[4], str(date).replace("-", "."))

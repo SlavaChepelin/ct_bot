@@ -37,9 +37,11 @@ async def add_user(tg_id: int,
 
 async def get_user(tg_id: int) -> tuple:
     db = await aiosqlite.connect('''data_bases/users.db''')
+
     cursor = await db.execute(f"SELECT * FROM Users WHERE (id == {tg_id})")
     result = await cursor.fetchone()
     await db.close()
+
     return result
     
 
@@ -55,7 +57,8 @@ async def update_user_group(tg_id: int, new_group: int) -> None:
         await db.commit()
 
     await db.close()
-    
+
+
 async def update_user_name(tg_id: int, new_first_name: str, new_last_name: str) -> None:
     db = await aiosqlite.connect('data_bases/users.db')
 
@@ -68,6 +71,8 @@ async def update_user_name(tg_id: int, new_first_name: str, new_last_name: str) 
         await db.commit()
 
     await db.close()
+
+
 async def update_user_updates(tg_id: int, new_get_updates: bool) -> None:
     db = await aiosqlite.connect('data_bases/users.db')
 
@@ -80,6 +85,8 @@ async def update_user_updates(tg_id: int, new_get_updates: bool) -> None:
         await db.commit()
 
     await db.close()
+
+
 async def update_user_update_time(tg_id: int, new_update_time: int) -> None:
     db = await aiosqlite.connect('data_bases/users.db')
 
@@ -92,6 +99,8 @@ async def update_user_update_time(tg_id: int, new_update_time: int) -> None:
         await db.commit()
 
     await db.close()
+
+
 async def update_is_admin(tg_id: int, new_is_admin: int) -> None:
     db = await aiosqlite.connect('data_bases/users.db')
 
@@ -104,6 +113,8 @@ async def update_is_admin(tg_id: int, new_is_admin: int) -> None:
         await db.commit()
 
     await db.close()
+
+
 async def is_user_admin(tg_id: int) -> bool: #админ
     db = await aiosqlite.connect('data_bases/users.db')
 
@@ -117,6 +128,7 @@ async def is_user_admin(tg_id: int) -> bool: #админ
             return False
     else:
         return False
+
 
 async def is_user_captain(tg_id: int) -> bool: #староста/админ
     db = await aiosqlite.connect('data_bases/users.db')
@@ -132,6 +144,8 @@ async def is_user_captain(tg_id: int) -> bool: #староста/админ
             return False
     else:
         return False
+
+
 async def is_filled(tg_id: int) -> bool: 
     db = await aiosqlite.connect('data_bases/users.db')
     cursor = await db.execute(f"SELECT first_name, last_name, group_id FROM Users WHERE (id == {tg_id})")
@@ -147,7 +161,8 @@ async def is_filled(tg_id: int) -> bool:
             return False
     else:
         return False
-    
+
+
 async def get_users_by_update_time(update_time: int) -> list:
     db = await aiosqlite.connect('data_bases/users.db')
     cursor = await db.execute(f"SELECT id FROM Users WHERE (update_time == {update_time} AND get_updates == 1)")
@@ -156,5 +171,3 @@ async def get_users_by_update_time(update_time: int) -> list:
 
     ids = [row[0] for row in result]
     return ids
-
-
