@@ -1,19 +1,18 @@
 from aiogram import Router, F
-from aiogram.filters import CommandStart
-from aiogram.filters import Command, StateFilter
+from aiogram.filters import CommandStart, Command, StateFilter
 from aiogram.types import Message, CallbackQuery
 
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 
-from kbds.basic_kbds import (GroupSelectionCallbackFactory, ConsentToUpdatesCallbackFactory,
-                             TimeSelectionCallbackFactory,
-                             get_group_selection_keyboard_fab, get_consent_to_updates_keyboard_fab,
-                             get_time_selection_keyboard_fab)
+from keyboards.start_kbds import (GroupSelectionCallbackFactory, ConsentToUpdatesCallbackFactory,
+                                  TimeSelectionCallbackFactory,
+                                  get_group_selection_keyboard_fab, get_consent_to_updates_keyboard_fab,
+                                  get_time_selection_keyboard_fab)
 
 from scripts import db_users
 
-basic_router = Router()
+start_router = Router()
 
 
 class AddInfo(StatesGroup):
@@ -24,19 +23,25 @@ class AddInfo(StatesGroup):
     time_selection = State()
 
 
-@basic_router.message(StateFilter(None), CommandStart())
+@start_router.message(StateFilter(None), CommandStart())
 async def start(message: Message, state: FSMContext):
+    text_1 = "Здравствуйте, мы рады что вы решили воспользоваться нашим ботом для расписания занятий на КТ!\n\n"
+
     await db_users.add_user(message.from_user.id, message.from_user.username)
+    is_filled = await db_users.is_filled(message.from_user.id)
 
-    await message.answer("Здравствуйте, "
-                         "мы рады что вы решили воспользоваться нашим ботом для расписания занятий на КТ!\n\n"
-                         "Для работы пожалуйста введите ваши данные.\n"
-                         "Сначала напишите своё имя.")
+    if is_filled:
+        text_2 = "Вы уже ввели свои данные, хотите их поменять?"
 
-    await state.set_state(AddInfo.first_name)
+    else:
+        text_2 = "Для работы пожалуйста введите ваши данные.\nСначала напишите своё имя."
+
+        await state.set_state(AddInfo.first_name)
+
+    await message.answer(text_1 + text_2)
 
 
-@basic_router.message(AddInfo.first_name, F.text)
+@start_router.message(AddInfo.first_name, F.text)
 async def add_first_name(message: Message, state: FSMContext):
     await state.update_data(first_name=message.text)
     await message.answer(f"Приятно познакомиться, {message.text}!\n\n"
@@ -45,7 +50,7 @@ async def add_first_name(message: Message, state: FSMContext):
     await state.set_state(AddInfo.last_name)
 
 
-@basic_router.message(AddInfo.last_name, F.text)
+@start_router.message(AddInfo.last_name, F.text)
 async def add_last_name(message: Message, state: FSMContext):
     await state.update_data(last_name=message.text)
     await message.answer(f"В какой группе вы учитесь?", reply_markup=get_group_selection_keyboard_fab())
@@ -53,22 +58,22 @@ async def add_last_name(message: Message, state: FSMContext):
     await state.set_state(AddInfo.group_id)
 
 
-@basic_router.callback_query(AddInfo.group_id,
+@start_router.callback_query(AddInfo.group_id,
                              GroupSelectionCallbackFactory.filter())
 async def add_group_selection(callback: CallbackQuery,
                               callback_data: GroupSelectionCallbackFactory,
                               state: FSMContext):
     await state.update_data(group_id=callback_data.action)
 
-    await callback.message.answer(f"Спасибо, записана группа M3{callback_data.action}.\n\n"
-                                  f"Теперь скажите, хотите ли вы получать ежедневную рассылку?",
-                                  reply_markup=get_consent_to_updates_keyboard_fab())
+    await callback.message.edit_text(f"Спасибо, записана группа M3{callback_data.action}.\n\n"
+                                     f"Теперь скажите, хотите ли вы получать ежедневную рассылку?")
+    await callback.message.edit_reply_markup(reply_markup=get_consent_to_updates_keyboard_fab())
 
     await state.set_state(AddInfo.need_update)
     await callback.answer()
 
 
-@basic_router.callback_query(AddInfo.need_update,
+@start_router.callback_query(AddInfo.need_update,
                              ConsentToUpdatesCallbackFactory.filter())
 async def add_consent_to_updates(callback: CallbackQuery,
                                  callback_data: ConsentToUpdatesCallbackFactory,
@@ -76,27 +81,28 @@ async def add_consent_to_updates(callback: CallbackQuery,
     await state.update_data(need_update=callback_data.action)
 
     if callback_data.action:
-        await callback.message.answer("Вы подписались на рассылку.\n"
-                                      "Вы можете отказаться от неё в любой момент.\n\n"
-                                      "Выберете время, в которое вам удобно получать расписание.",
-                                      reply_markup=get_time_selection_keyboard_fab())
+        await callback.message.edit_text("Вы подписались на рассылку.\n"
+                                         "Вы можете отказаться от неё в любой момент.\n\n"
+                                         "Выберете время, в которое вам удобно получать расписание.", )
+        await callback.message.edit_reply_markup(reply_markup=get_time_selection_keyboard_fab())
+
         await state.set_state(AddInfo.time_selection)
 
     else:
-        await callback.message.answer("Вы отказались от рассылки.\n"
-                                      "Вы можете подписаться на неё в любой момент.")
+        await callback.message.edit_text("Вы отказались от рассылки.\n"
+                                         "Вы можете подписаться на неё в любой момент.")
         await state.set_state(None)
 
     await callback.answer()
 
 
-@basic_router.callback_query(AddInfo.time_selection, TimeSelectionCallbackFactory.filter())
+@start_router.callback_query(AddInfo.time_selection, TimeSelectionCallbackFactory.filter())
 async def add_time_selection(callback: CallbackQuery,
                              callback_data: TimeSelectionCallbackFactory,
                              state: FSMContext):
     await state.update_data(time_selection=callback_data.action)
 
-    await callback.message.answer(f"Спасибо большое, вы выбрали получать уведомления в {callback_data.action}:00.")
+    await callback.message.edit_text(f"Спасибо большое, вы выбрали получать уведомления в {callback_data.action}:00.")
 
     data: dict = await state.get_data()
 
@@ -107,7 +113,6 @@ async def add_time_selection(callback: CallbackQuery,
 
     await state.set_state(None)
     await callback.answer()
-
 
 
 '''
