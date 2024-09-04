@@ -4,7 +4,7 @@ from aiogram.types import Message
 
 from scripts import db_schedule
 from scripts import db_all
-from scripts import forms
+from scripts import formatting
 from parsing import updating
 
 test_router = Router()
