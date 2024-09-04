@@ -49,7 +49,11 @@ async def addplus(message: Message):
 
 @test_router.message(Command("transfer_lessons"))
 async def transfer_lessons(message: Message):
-   await forms.transfer_lessons(39, "2024.09.04",4,39, "2024.09.04",5)
+   await forms.transfer_lessons(39, "2024.09.04",4, "2024.09.04",5)
+   
+@test_router.message(Command("delete_changes"))
+async def delete_changes(message: Message):
+   await forms.delete_changes(39, "2024.09.04")
 
 @test_router.message(Command("get_schedule"))
 async def get_schedule(message: Message):

@@ -16,8 +16,10 @@ async def add_lessons(groupid: int, date: str, lesson: int,
 '''
 5) Перенести пару (день номер пары откуда, день номер пары куда)
 '''
-async def transfer_lessons(groupid: int, date: str, lesson:str, newdate: str, newlesson:str) -> None:
-    cnt= await db_all.get_row(groupid,date,lesson)
+async def transfer_lessons(groupid: int, date: str, lesson:int, newdate: str, newlesson:int) -> None:
+    day = datetime.datetime(int(date.split('.')[0]),int(date.split('.')[1]),int(date.split('.')[2])).weekday()+1
+   
+    cnt= await db_all.get_row(groupid,day,lesson)
     if(cnt != None):
         await cancel_lessons(groupid, date, lesson)
         await add_lessons(groupid, newdate, newlesson, cnt[4], cnt[5], cnt[6], cnt[7])
