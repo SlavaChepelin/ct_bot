@@ -58,5 +58,5 @@ async def beatiful_schedule(group: int, day: str):
     for i in range(8):
         if(schedule[i][0]== ""):
             continue
-        ans.append(f"{data[i]} = {schedule[i][0]}, {schedule[i][1]}, {schedule[i][2]}, {schedule[i][3]}")
+        ans.append(f"{data[i]} {schedule[i][0]}, {schedule[i][1]}, {schedule[i][2]}, {schedule[i][3]}")
     return ans
