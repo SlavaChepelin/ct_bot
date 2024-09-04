@@ -51,12 +51,15 @@ async def get_schedule(group: int, day: str):
         anstable[int(row[3])-1]=[row[4],row[5],row[6],row[7]]
     return anstable # есть изменения
 
-data = ["8:20-9:50","10:00-11:30","11:40-13:10","13:30-15:00","15:20-16:50","17:00-18:30","18:40-20:10","20:20-21.50 "]
+data = [" 8:20 –  9:50", "10:00 – 11:30", "11:40 – 13:10", "13:30 – 15:00",
+        "15:20 – 16:50", "17:00 – 18:30", "18:40 – 20:10", "20:20 – 21.50"]
+
+
 async def beatiful_schedule(group: int, day: str):
     schedule = await get_schedule(group, day)
-    ans=[]
+    ans = []
     for i in range(8):
-        if(schedule[i][0]== ""):
+        if schedule[i][0] == "":
             continue
-        ans.append(f"{data[i]} {schedule[i][0]}, {schedule[i][1]}, {schedule[i][2]}, {schedule[i][3]}")
+        ans.append(f"{data[i]}  {schedule[i][2]}  {schedule[i][3]}  {schedule[i][0]}  {schedule[i][1]}")
     return ans
