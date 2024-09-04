@@ -8,7 +8,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
-from handlers import start, test, user
+from handlers import start, test, user, schedule, settings
 
 
 load_dotenv()
