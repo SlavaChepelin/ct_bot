@@ -6,7 +6,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
-from handlers import start, test
+from handlers import start, test, user
 
 
 load_dotenv()
@@ -20,6 +20,7 @@ async def main():
     dp = Dispatcher()
 
     dp.include_routers(start.start_router,
+                       user.user_router,
                        test.test_router)
 
     await bot.delete_webhook(drop_pending_updates=True)
