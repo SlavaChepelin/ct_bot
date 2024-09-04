@@ -12,6 +12,7 @@ from keyboards.start_kbds import (GroupSelectionCallbackFactory, ConsentToUpdate
 
 from scripts import db_users
 
+
 start_router = Router()
 
 
@@ -24,7 +25,7 @@ class AddInfo(StatesGroup):
 
 
 @start_router.message(StateFilter(None), CommandStart())
-async def start(message: Message, state: FSMContext):
+async def start(message: Message, state: FSMContext) -> None:
     text_1 = "Здравствуйте, мы рады что вы решили воспользоваться нашим ботом для расписания занятий на КТ!\n\n"
 
     await db_users.add_user(message.from_user.id, message.from_user.username)
@@ -42,7 +43,7 @@ async def start(message: Message, state: FSMContext):
 
 
 @start_router.message(AddInfo.first_name, F.text)
-async def add_first_name(message: Message, state: FSMContext):
+async def add_first_name(message: Message, state: FSMContext) -> None:
     await state.update_data(first_name=message.text)
     await message.answer(f"Приятно познакомиться, {message.text}!\n\n"
                          f"Теперь пожалуйста введите вашу фамилию.")
@@ -51,18 +52,17 @@ async def add_first_name(message: Message, state: FSMContext):
 
 
 @start_router.message(AddInfo.last_name, F.text)
-async def add_last_name(message: Message, state: FSMContext):
+async def add_last_name(message: Message, state: FSMContext) -> None:
     await state.update_data(last_name=message.text)
     await message.answer(f"В какой группе вы учитесь?", reply_markup=get_group_selection_keyboard_fab())
 
     await state.set_state(AddInfo.group_id)
 
 
-@start_router.callback_query(AddInfo.group_id,
-                             GroupSelectionCallbackFactory.filter())
+@start_router.callback_query(AddInfo.group_id, GroupSelectionCallbackFactory.filter())
 async def add_group_selection(callback: CallbackQuery,
                               callback_data: GroupSelectionCallbackFactory,
-                              state: FSMContext):
+                              state: FSMContext) -> None:
     await state.update_data(group_id=callback_data.action)
 
     await callback.message.edit_text(f"Спасибо, записана группа M3{callback_data.action}.\n\n"
@@ -73,11 +73,10 @@ async def add_group_selection(callback: CallbackQuery,
     await callback.answer()
 
 
-@start_router.callback_query(AddInfo.need_update,
-                             ConsentToUpdatesCallbackFactory.filter())
+@start_router.callback_query(AddInfo.need_update, ConsentToUpdatesCallbackFactory.filter())
 async def add_consent_to_updates(callback: CallbackQuery,
                                  callback_data: ConsentToUpdatesCallbackFactory,
-                                 state: FSMContext):
+                                 state: FSMContext) -> None:
     await state.update_data(need_update=callback_data.action)
 
     if callback_data.action:
@@ -99,7 +98,7 @@ async def add_consent_to_updates(callback: CallbackQuery,
 @start_router.callback_query(AddInfo.time_selection, TimeSelectionCallbackFactory.filter())
 async def add_time_selection(callback: CallbackQuery,
                              callback_data: TimeSelectionCallbackFactory,
-                             state: FSMContext):
+                             state: FSMContext) -> None:
     await state.update_data(time_selection=callback_data.action)
 
     await callback.message.edit_text(f"Спасибо большое, вы выбрали получать уведомления в {callback_data.action}:00.")
