@@ -16,9 +16,11 @@ from keyboards.user_kbds import menu_kb, delete_kb
 from scripts import db_users
 
 
+# Создаем роутер для стартовых команд.
 start_router = Router()
 
 
+# Создаем класс для хранения данных нового пользователя, получаемых из машины состояний.
 class AddInfo(StatesGroup):
     first_name = State()
     last_name = State()
@@ -27,39 +29,50 @@ class AddInfo(StatesGroup):
     time_selection = State()
 
 
+# Обработчик команды "/start"
 @start_router.message(StateFilter(None), CommandStart())
 async def start(message: Message, state: FSMContext) -> None:
     text_1 = "Здравствуйте, мы рады что вы решили воспользоваться нашим ботом для расписания занятий на КТ!\n\n"
 
+    # Добавление в БД базовых данных о пользователе (если их ещё нет)
     await db_users.add_user(message.from_user.id, message.from_user.username)
+    # Проверка, внесены ли дополнительные данные пользователя
     is_filled = await db_users.is_filled(message.from_user.id)
 
+    # В случае, если дополнительные данные есть, ничего не происходит.
     if is_filled:
-        text_2 = "Вы уже ввели свои данные, вы можете их поменять в настройках"
+        text_2 = "Вы уже ввели свои данные, вы можете их поменять в настройках."
 
         await message.answer(text_1 + text_2, reply_markup=menu_kb)
 
+    # Если дополнительных данных нет, начинается их запрос.
     else:
         text_2 = "Для работы пожалуйста введите ваши данные.\nСначала напишите своё имя."
 
         await message.answer(text_1 + text_2, reply_markup=delete_kb)
+        # Состояние меняется, на ожидание имени от пользователя.
         await state.set_state(AddInfo.first_name)
 
 
 @start_router.message(AddInfo.first_name, F.text)
 async def add_first_name(message: Message, state: FSMContext) -> None:
+    # Запись имени в машину состояний.
     await state.update_data(first_name=message.text)
     await message.answer(f"Приятно познакомиться, {message.text}!\n\n"
                          f"Теперь пожалуйста введите вашу фамилию.")
 
+    # Состояние меняется, на ожидание фамилии от пользователя.
     await state.set_state(AddInfo.last_name)
 
 
 @start_router.message(AddInfo.last_name, F.text)
 async def add_last_name(message: Message, state: FSMContext) -> None:
+    # Запись фамилии в машину состояний.
     await state.update_data(last_name=message.text)
+    # С помощью "reply_markup=get_group_selection_keyboard_fab()" вызываем клавиатуру выбора группы
     await message.answer(f"В какой группе вы учитесь?", reply_markup=get_group_selection_keyboard_fab())
 
+    # Состояние меняется, на ожидание выбора группы от пользователя.
     await state.set_state(AddInfo.group_id)
 
 
