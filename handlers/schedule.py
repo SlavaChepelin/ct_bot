@@ -22,7 +22,6 @@ async def send_schedule_selection(callback: CallbackQuery, callback_data: Schedu
 
 @schedule_router.callback_query(ScheduleTypeSelectionCallbackFactory.filter())
 async def send_schedule(callback: CallbackQuery, callback_data: ScheduleTypeSelectionCallbackFactory):
-
     if callback_data.action == "today" or callback_data.action == "tomorrow":
         text = "Расписание\n\n"
         date = datetime.date.today()
