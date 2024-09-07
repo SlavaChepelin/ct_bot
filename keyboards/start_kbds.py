@@ -59,7 +59,7 @@ def get_time_selection_keyboard_fab():
     builder_4 = InlineKeyboardBuilder()
     builder_all = InlineKeyboardBuilder()
 
-    builder_1.button(text="В вечер перед парами", callback_data=TimeSelectionCallbackFactory(action=20))
+    builder_1.button(text="В вечер перед парами", callback_data=TimeSelectionCallbackFactory(action=0))
     builder_1.adjust(1)
 
     builder_2.button(text="18:00", callback_data=TimeSelectionCallbackFactory(action=18))
@@ -67,7 +67,7 @@ def get_time_selection_keyboard_fab():
     builder_2.button(text="22:00", callback_data=TimeSelectionCallbackFactory(action=22))
     builder_2.adjust(3)
 
-    builder_3.button(text="На утро перед парами", callback_data=TimeSelectionCallbackFactory(action=8))
+    builder_3.button(text="На утро перед парами", callback_data=TimeSelectionCallbackFactory(action=0))
     builder_3.adjust(1)
 
     builder_4.button(text="7:00", callback_data=TimeSelectionCallbackFactory(action=7))

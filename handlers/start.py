@@ -116,22 +116,26 @@ async def add_consent_to_updates(callback: CallbackQuery,
 async def add_time_selection(callback: CallbackQuery,
                              callback_data: TimeSelectionCallbackFactory,
                              state: FSMContext) -> None:
-    await state.update_data(time_selection=callback_data.action)
+    if callback_data.action == 0:
+        await callback.answer(text="Вы нажали на декоративную кнопку, пожалуйста выберите время.", show_alert=True)
 
-    await callback.message.edit_text(f"Вы выбрали получать уведомления в {callback_data.action}:00.")
+    else:
+        await state.update_data(time_selection=callback_data.action)
 
-    await callback.message.answer(text="Все необходимые данные заполнены, вы можете их исправить в настройках.",
-                                  reply_markup=menu_kb)
+        await callback.message.edit_text(f"Вы выбрали получать уведомления в {callback_data.action}:00.")
 
-    data: dict = await state.get_data()
+        await callback.message.answer(text="Все необходимые данные заполнены, вы можете их исправить в настройках.",
+                                      reply_markup=menu_kb)
 
-    await db_users.update_user_group(callback.from_user.id, data["group_id"])
-    await db_users.update_user_name(callback.from_user.id, data["first_name"], data["last_name"])
-    await db_users.update_user_updates(callback.from_user.id, data["need_update"])
-    await db_users.update_user_update_time(callback.from_user.id, data["time_selection"])
+        data: dict = await state.get_data()
 
-    await state.set_state(None)
-    await callback.answer()
+        await db_users.update_user_group(callback.from_user.id, data["group_id"])
+        await db_users.update_user_name(callback.from_user.id, data["first_name"], data["last_name"])
+        await db_users.update_user_updates(callback.from_user.id, data["need_update"])
+        await db_users.update_user_update_time(callback.from_user.id, data["time_selection"])
+
+        await state.set_state(None)
+        await callback.answer()
 
 
 '''
